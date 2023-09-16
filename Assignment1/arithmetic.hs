@@ -45,6 +45,16 @@ nn_pp :: PP -> NN
 nn_pp I = O
 nn_pp (T a) = S (nn_pp a)
 
+-- secondary Convert PP to NN
+p_n :: PP -> NN
+p_n I = S O
+p_n (T pp) = S (p_n pp)
+
+-- secondary Convert NN to PP
+n_p :: NN -> PP
+n_p O = I
+n_p (S nn) = T (n_p nn)
+
 -- cast numbers of type NN to numbers of type II
 ii_nn :: NN -> II
 ii_nn n = II n O
@@ -52,6 +62,13 @@ ii_nn n = II n O
 -- cast numbers of type PP to numbers of type II
 ii_pp :: PP -> II
 ii_pp p = II (nn_pp p) O
+
+-- Check if one NN is greater than the other
+gtN :: NN -> NN -> Bool
+gtN O _ = False
+gtN _ O = True
+gtN (S a) (S b) = gtN a b
+
 
 ----------------
 -- NN Arithmetic
@@ -82,18 +99,28 @@ divN n (T p) = S (divN (subN n (nn_pp (T p))) (T p))
 modN :: NN -> PP -> NN
 modN n p = subN n (multN (divN n p) n)
 
---gcdP :: PP -> PP -> PP
---gcdP I b = b
---gcdP a b = gcdP b (modN (ii_pp a) b)
 
--- subtraction
--- subN :: NN -> NN -> NN
--- subN n O = n
--- subN (S n) (S m) = subN n m
+-- GCD for NN
+gcdN :: NN -> NN -> NN
+gcdN a O = a
+gcdN O b = b
+gcdN a b
+    | a == b    = a
+    | gtN a b   = gcdN (subNN a b) b
+    | otherwise = gcdN a (subNN b a)
+
+-- Subtract two NNs; if result is negative, it returns O
+
 subN :: NN -> NN -> NN
 subN O _ = O  -- Subtracting any number from zero is zero
 subN n O = n  -- Subtracting zero from any number is the number itself
 subN (S n) (S m) = subN n m  -- Subtracting two successors
+
+-- secondary Subtract two NNs; if result is negative, it returns O
+subNN :: NN -> NN -> NN
+subNN a O = a
+subNN O _ = O
+subNN (S a) (S b) = subNN a b
 
 ----------------
 -- II Arithmetic
@@ -169,9 +196,20 @@ pp_int n
   | n == 1 = I
   | otherwise = T (pp_int (n - 1))
 
+-- secondary Convert PP to Integer
+p_int :: PP -> Integer
+p_int I = 1
+p_int (T pp) = 1 + p_int pp
+
+-- Convert PP to Integer
+
 int_pp :: PP -> Integer
 int_pp I = 1
 int_pp (T p) = 1 + int_pp p
+
+-- GCD for PP
+gcdP :: PP -> PP -> PP
+gcdP a b = n_p (gcdN (p_n a) (p_n b))
 
 float_qq :: QQ -> Float
 float_qq (QQ a b) = fromIntegral (int_ii a) / fromIntegral (int_pp b)
@@ -224,8 +262,8 @@ main = do
     putStr "modN: "; print $ int_nn (modN nn7 pp5) -- Expected: 2
 
     -- Test gcdP
-    let pp6 = pp_int 6
-    --putStr "gcdP: "; print $ int_pp (gcdP pp6 pp2) -- Expected: 2
+    let result = gcdP (T (T (T I))) (T (T I))
+    putStr "gcdP:  "; print $ p_int result -- Should be 3
 
     -- Test addI
     let ii3 = ii_int 3
