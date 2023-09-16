@@ -1,6 +1,3 @@
--- A Virtual Machine for Unary Arithmetic (UAVM)
--- Copyright: Alexander Kurz 2023
-
 -----------------------
 -- Data types of the VM
 -----------------------
