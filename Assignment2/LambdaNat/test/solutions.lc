@@ -1,0 +1,55 @@
+-- Function to convert a list to a string representation
+function listToString(lst)
+    local elements = {}
+    while lst ~= nil do
+        table.insert(elements, lst[1])
+        lst = lst[2]
+    end
+    return table.concat(elements, ", ")
+end
+
+-- Length function
+function length(lst)
+    local count = 0
+    while lst ~= nil do
+        count = count + 1
+        lst = lst[2]  -- Navigating to the next element in the list
+    end
+    return count
+end
+
+-- Sum function
+function sum(lst)
+    local total = 0
+    while lst ~= nil do
+        total = total + lst[1]
+        lst = lst[2]  -- Navigating to the next element in the list
+    end
+    return total
+end
+
+-- Helper function for the Sort function (Insertion sort)
+function insert(value, lst)
+    if lst == nil then
+        return {value, nil}
+    elseif value <= lst[1] then
+        return {value, lst}
+    else
+        return {lst[1], insert(value, lst[2])}
+    end
+end
+
+-- Sort function (using insertion sort)
+function sort(lst)
+    local sorted = nil
+    while lst ~= nil do
+        sorted = insert(lst[1], sorted)
+        lst = lst[2]  -- Navigating to the next element in the list
+    end
+    return sorted
+end
+
+-- Test cases
+print("length {'a', {'b', {'c', nil}}} = ", length({"a", {"b", {"c", nil}}}))
+print("sum {1, {2, {3, {4, nil}}}} = ", sum({1, {2, {3, {4, nil}}}}))
+print("sort {5, {3, {4, {3, {1, nil}}}}} = ", listToString(sort({5, {3, {4, {3, {1, nil}}}}})))
