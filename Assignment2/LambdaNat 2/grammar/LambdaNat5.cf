@@ -1,0 +1,39 @@
+------------------------------------------------------------------
+-- Lambda Calculus with integer arithmetic, let, recursion, lists
+------------------------------------------------------------------
+
+Prog.      Program ::= [Exp] ;  
+separator Exp ";;" ;
+
+Abs.      Exp1 ::= "\\" Id "." Exp ;   
+
+If.       Exp2 ::= "if" Exp "=" Exp "then" Exp "else" Exp ; 
+
+Let.      Exp3 ::= "let" Id "=" Exp "in" Exp ;  
+Rec.      Exp4 ::= "let rec" Id "=" Exp "in" Exp ;
+internal Fix.   Exp5 ::= "fix" Exp ;                            -- only for abstract syntax
+
+Hd.       Exp6 ::= "hd" Exp ;
+Tl.       Exp6 ::= "tl" Exp ;
+
+LE.       Exp9 ::= Exp10 "less_equal" Exp10 ;
+Plus.     Exp10 ::= Exp10 "+" Exp11 ;
+Minus.    Exp10 ::= Exp10 "-" Exp11 ;
+Times.    Exp11 ::= Exp11 "*" Exp12 ;
+Power.      Exp12 ::= Exp12 "^" Exp13 ;
+
+App.      Exp14 ::= Exp14 Exp15 ;  
+
+Nil.      Exp16 ::= "#" ; 
+Cons.     Exp16 ::= Exp17 ":" Exp16 ;
+
+Int.      Exp17 ::= Integer ; 
+
+Var.      Exp18 ::= Id ;  
+
+coercions Exp 18 ;
+
+token Id (lower (letter | digit | '_')*) ;
+
+comment "//" ;
+comment "/*" "*/" ;

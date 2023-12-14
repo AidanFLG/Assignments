@@ -1,0 +1,8 @@
+# https://hackmd.io/@alexhkurz/HJxD19_Vo
+FROM haskell:8
+WORKDIR /
+RUN cabal update;
+RUN cabal install BNFC;
+RUN cabal install alex;
+RUN cabal install happy;
+CMD /bin/bash
